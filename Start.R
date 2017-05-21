@@ -27,7 +27,7 @@ query2 = "MATCH (n1:Product)-[r:CO_PURCHASED]->(n2:Product) WHERE n1.NodeId='3' 
 
 ## Collaborative Filtering
 
-query3 = "MATCH (n1:Product)-[:CO_PURCHASED]->(n2:Product), (n2)-[:CO_PURCHASED]->(n3:Product) WHERE n1.NodeId = "0" AND NOT (n1)-[:CO_PURCHASED]->(n3) AND NOT n3.NodeId = n1.NodeId RETURN n3.NodeId, count(distinct n3) as frequency ORDER BY frequency DESC LIMIT 5"
+query3 = "MATCH (n1:Product)-[:CO_PURCHASED]->(n2:Product), (n2)-[:CO_PURCHASED]->(n3:Product) WHERE n1.NodeId = '0' AND NOT (n1)-[:CO_PURCHASED]->(n3) AND NOT n3.NodeId = n1.NodeId RETURN n3.NodeId, count(distinct n3) as frequency ORDER BY frequency DESC LIMIT 5"
 
 nodes_query = "MATCH (n:Product) RETURN DISTINCT n.NodeId AS id"
 
@@ -217,6 +217,16 @@ merged.bfs=merged.bfs[order(merged.bfs$sum),]
 # result: Adjusting the length
 merged.bfs[,1]
 
+
+
+
+# Test
+MATCH (p0:Product)
+CALL apoc.algo.community(25,null,'NodeId','Product','OUTGOING','weight',10000) YIELD community
+RETURN community
+
+MATCH (n:Product) 
+RETURN distinct(n.community) as community,count(n) as Members
 
 ##### Test of Spark
 ./bin/spark-shell \
